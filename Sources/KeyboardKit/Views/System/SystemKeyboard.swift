@@ -128,7 +128,7 @@ public extension SystemKeyboard where RowItem == AnyView {
             inputContext: InputCalloutContext?,
             secondaryInputContext: SecondaryInputCalloutContext?,
             width: CGFloat = KeyboardInputViewController.shared.view.frame.width,
-            buttonContent: @escaping ButtonBuilder<AnyView> = { action, appearance, context in
+            buttonBuilder: @escaping ButtonBuilder<AnyView> = { action, appearance, context in
                 AnyView(standardButtonBuilder(action: action, appearance: appearance, context: context))
             }
     ) {
@@ -143,7 +143,7 @@ public extension SystemKeyboard where RowItem == AnyView {
                 rowItem: { layout, item, keyboardWidth, inputWidth in
                     AnyView(
                             SystemKeyboardButtonRowItem(
-                                    content: buttonContent(item.action, appearance, context),
+                                    content: buttonBuilder(item.action, appearance, context),
                                     item: item,
                                     context: context,
                                     keyboardWidth: keyboardWidth,
@@ -189,7 +189,7 @@ func standardSystemKeyboard(
     ) { layout, item, keyboardWidth, inputWidth in
         // Use standard button builder
         SystemKeyboardButtonRowItem(
-                content: SystemKeyboard<SystemKeyboardActionButtonContent>.standardButtonBuilder(action: item.action, appearance: appearance, context: context),
+                content: defaultButtonBuilder(action: item.action, appearance: appearance, context: context),
                 item: item,
                 context: context,
                 keyboardWidth: keyboardWidth,
@@ -219,7 +219,7 @@ func standardSystemKeyboard<ButtonContent: View>(
         inputContext: InputCalloutContext?,
         secondaryInputContext: SecondaryInputCalloutContext?,
         width: CGFloat = KeyboardInputViewController.shared.view.frame.width,
-        buttonContent: @escaping ButtonBuilder<ButtonContent>
+        buttonBuilder: @escaping ButtonBuilder<ButtonContent>
 ) -> some View {
     SystemKeyboard(
             layout: layout,
@@ -231,7 +231,7 @@ func standardSystemKeyboard<ButtonContent: View>(
             width: width,
             rowItem: { layout, item, keyboardWidth, inputWidth in
                 SystemKeyboardButtonRowItem(
-                        content: buttonContent(item.action, appearance, context),
+                        content: buttonBuilder(item.action, appearance, context),
                         item: item,
                         context: context,
                         keyboardWidth: keyboardWidth,
@@ -250,17 +250,28 @@ public extension SystemKeyboard {
      This is the standard `buttonBuilder`, that will be used
      when no custom builder is provided to the view.
      */
+    @available(*, deprecated, message: "Use defaultButtonBuilder() instead")
     static func standardButtonBuilder(
             action: KeyboardAction,
             appearance: KeyboardAppearance,
-            context: KeyboardContext) -> SystemKeyboardActionButtonContent {
-        SystemKeyboardActionButtonContent(
-                action: action,
-                appearance: appearance,
-                context: context
-        )
+            context: KeyboardContext) -> AnyView {
+        AnyView(defaultButtonBuilder(action: action, appearance: appearance, context: context))
     }
 
+}
+/**
+ This is the standard `buttonBuilder`, that will be used
+ when no custom builder is provided to the view.
+ */
+func defaultButtonBuilder(
+        action: KeyboardAction,
+        appearance: KeyboardAppearance,
+        context: KeyboardContext) -> SystemKeyboardActionButtonContent {
+    SystemKeyboardActionButtonContent(
+            action: action,
+            appearance: appearance,
+            context: context
+    )
 }
 
 private extension SystemKeyboard {
