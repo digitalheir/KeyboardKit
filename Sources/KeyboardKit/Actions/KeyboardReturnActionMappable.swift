@@ -35,7 +35,7 @@ public extension UIReturnKeyType {
      The keyboard action that this return key type maps to.
      */
     var keyboardAction: KeyboardAction {
-        print("keyboardAction: keyboardActionReturnType")
+        //print("keyboardAction: keyboardActionReturnType")
         return .primary(keyboardActionReturnType)
     }
 
