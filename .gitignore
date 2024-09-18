@@ -1,5 +1,6 @@
 # SPM defaults
 .DS_Store
+.idea/
 /.build
 /Packages
 xcuserdata/
